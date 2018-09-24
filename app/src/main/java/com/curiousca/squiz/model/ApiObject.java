@@ -24,13 +24,13 @@ public class ApiObject {
     private String answer;
     @SerializedName("category")
     @Expose
-    private String category;
+    private int category;
 
-    public String getCategory() {
+    public int getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(int category) {
         this.category = category;
     }
 

@@ -44,8 +44,6 @@ public class GKDataSource {
             values.put(QuizContract.QuestionsTable.COLUMN_OPTION3, question.getOption3());
             values.put(QuizContract.QuestionsTable.COLUMN_ANSWER_NR, question.getAnswerNr());
             values.put(QuizContract.QuestionsTable.COLUMN_CATEGORY_ID, question.getCategoryID());
-
-
             database.insert(QuizContract.QuestionsTable.TABLE_NAME, null, values);
         } else {
             //else update the row

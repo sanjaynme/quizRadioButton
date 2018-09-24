@@ -26,14 +26,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.curiousca.squiz.DataClasses.Category.GEOGRAPHY;
 
 public class MainActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     private GKDataSource gkDataSource;
 
     private static final int REQUEST_CODE_QUIZ = 1;
-    public static final String EXTRA_DIFFICULTY = "extraDifficulty";
     public static final String EXTRA_CATEGORY_ID = "extraCategoryID";
     public static final String EXTRA_CATEGORY_NAME = "extraCategoryName";
 
@@ -41,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String KEY_HIGHSCORE = "keyHighscore";
 
     private TextView textViewHighscore;
-    //    private Spinner spinnerDifficulty;
     private Spinner spinnerCategory;
     private int highscore;
 
@@ -51,12 +48,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         textViewHighscore = findViewById(R.id.text_View_highscore);
-//        spinnerDifficulty = findViewById(R.id.spinner_difficulty);
         spinnerCategory = findViewById(R.id.spinner_category);
         gkDataSource = new GKDataSource(MainActivity.this);
 
         loadCategories();
-//        loadDifficultyLevels();
         loadHighscore();
 
         progressDialog = new ProgressDialog(MainActivity.this);
@@ -93,12 +88,12 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < response.body().size(); i++) {
             int id = response.body().get(i).getId();
             question.setId(id);
-            question.setAnswerNr(1);
+            question.setAnswerNr(Integer.parseInt(response.body().get(i).getAnswer()));
             question.setOption1(response.body().get(i).getOpta());
             question.setOption2(response.body().get(i).getOptb());
             question.setOption3(response.body().get(i).getOptc());
             question.setQuestion(response.body().get(i).getQuestion());
-            question.setCategoryID(GEOGRAPHY);
+            question.setCategoryID(response.body().get(i).getCategory());
             gkDataSource.insertOrUpdateGkQuestion(question);
         }
         gkDataSource.close();
@@ -108,12 +103,10 @@ public class MainActivity extends AppCompatActivity {
         Category selectedCategory = (Category) spinnerCategory.getSelectedItem();
         int categoryID = selectedCategory.getId();
         String categoryName = selectedCategory.getName();
-//        String difficulty = spinnerDifficulty.getSelectedItem().toString();
 
         Intent intent = new Intent(MainActivity.this, QuizActivity.class);
         intent.putExtra(EXTRA_CATEGORY_ID, categoryID);
         intent.putExtra(EXTRA_CATEGORY_NAME, categoryName);
-//        intent.putExtra(EXTRA_DIFFICULTY, difficulty);
         startActivityForResult(intent, REQUEST_CODE_QUIZ);
     }
 
@@ -140,14 +133,6 @@ public class MainActivity extends AppCompatActivity {
         adapterCategories.setDropDownViewResource(android.R.layout.simple_list_item_checked);
         spinnerCategory.setAdapter(adapterCategories);
     }
-/*
-    private void loadDifficultyLevels() {
-        String[] difficultyLevels = Question.getAllDifficultyLevels();
-        ArrayAdapter<String> adapterDifficulty = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, difficultyLevels);
-        adapterDifficulty.setDropDownViewResource(android.R.layout.simple_list_item_checked);
-        spinnerDifficulty.setAdapter(adapterDifficulty);
-    }*/
 
     private void loadHighscore() {
         SharedPreferences prefs = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
