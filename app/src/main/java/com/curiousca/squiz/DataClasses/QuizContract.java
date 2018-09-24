@@ -13,8 +13,6 @@ public class QuizContract {
     }
 
     public static class QuestionsTable implements BaseColumns {
-        //public static final String _ID = "_id";
-//        public static final String COLUMN_ITEM_ID = "id";
         public static final String TABLE_NAME = "quiz_questions";
         public static final String COLUMN_QUESTION = "question";
         public static final String COLUMN_OPTION1 = "option1";

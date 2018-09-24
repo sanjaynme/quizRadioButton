@@ -1,11 +1,6 @@
 package com.curiousca.squiz.DataClasses;
 
 public class Category {
-    public static final int PROGRAMMING = 1;
-    public static final int GEOGRAPHY = 2;
-    public static final int MATH = 3;
-    public static final int HISTORY = 4;
-
     private int id;
     private String name;
 

@@ -15,10 +15,7 @@ import static com.curiousca.squiz.DataClasses.QuizContract.QuestionsTable;
 public class QuizDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "KoolQuiz.db";
     private static final int DATABASE_VERSION = 1;
-    SQLiteOpenHelper dbhelper;
-
     private static QuizDbHelper instance;
-
     private SQLiteDatabase db;
 
     public QuizDbHelper(Context context) {
@@ -109,30 +106,6 @@ public class QuizDbHelper extends SQLiteOpenHelper {
         cursor.close();
         return categoryList;
     }
-
-    public ArrayList<Question> getAllQuestions() {
-        ArrayList<Question> questionList = new ArrayList<>();
-        db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + QuestionsTable.TABLE_NAME, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                Question question = new Question();
-                question.setId(cursor.getInt(cursor.getColumnIndex(QuestionsTable._ID)));
-                question.setQuestion(cursor.getString(cursor.getColumnIndex(QuestionsTable.COLUMN_QUESTION)));
-                question.setOption1(cursor.getString(cursor.getColumnIndex(QuestionsTable.COLUMN_OPTION1)));
-                question.setOption2(cursor.getString(cursor.getColumnIndex(QuestionsTable.COLUMN_OPTION2)));
-                question.setOption3(cursor.getString(cursor.getColumnIndex(QuestionsTable.COLUMN_OPTION3)));
-                question.setAnswerNr(cursor.getInt(cursor.getColumnIndex(QuestionsTable.COLUMN_ANSWER_NR)));
-//                question.setDifficulty(cursor.getString(cursor.getColumnIndex(QuestionsTable.COLUMN_DIFFICULTY)));
-                question.setCategoryID(cursor.getInt(cursor.getColumnIndex(QuestionsTable.COLUMN_CATEGORY_ID)));
-                questionList.add(question);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return questionList;
-    }
-
     public ArrayList<Question> getQuestions(int categoryID) {
         ArrayList<Question> questionList = new ArrayList<>();
         db = getReadableDatabase();
@@ -146,10 +119,6 @@ public class QuizDbHelper extends SQLiteOpenHelper {
                 selection, selectionArgs,
                 null, null, null);
 
-//        String[] selectionArgs = new String[]{difficulty};
-//        Cursor cursor = db.rawQuery("SELECT * FROM " + QuestionsTable.TABLE_NAME +
-//                " WHERE " + QuestionsTable.COLUMN_DIFFICULTY + " = ?", selectionArgs);
-
         if (cursor.moveToFirst()) {
             do {
                 Question question = new Question();
@@ -159,7 +128,6 @@ public class QuizDbHelper extends SQLiteOpenHelper {
                 question.setOption2(cursor.getString(cursor.getColumnIndex(QuestionsTable.COLUMN_OPTION2)));
                 question.setOption3(cursor.getString(cursor.getColumnIndex(QuestionsTable.COLUMN_OPTION3)));
                 question.setAnswerNr(cursor.getInt(cursor.getColumnIndex(QuestionsTable.COLUMN_ANSWER_NR)));
-//                question.setDifficulty(cursor.getString(cursor.getColumnIndex(QuestionsTable.COLUMN_DIFFICULTY)));
                 question.setCategoryID(cursor.getInt(cursor.getColumnIndex(QuestionsTable.COLUMN_CATEGORY_ID)));
                 questionList.add(question);
             } while (cursor.moveToNext());
@@ -167,5 +135,4 @@ public class QuizDbHelper extends SQLiteOpenHelper {
         cursor.close();
         return questionList;
     }
-
 }

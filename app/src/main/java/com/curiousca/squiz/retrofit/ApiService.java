@@ -20,12 +20,5 @@ public class ApiService {
     public interface RetrofitInterface {
         @GET("sync/quiz.php")
         public Call<List<ApiObject>> getAllPost();
-
-        @GET("sync/gk.php")
-        public Call<List<ApiObject>> getGkPost();
-
-        @GET("sync/science.php")
-        public Call<List<ApiObject>> getSciencePost();
-
-    }
+        }
 }
