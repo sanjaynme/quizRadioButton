@@ -72,14 +72,26 @@ public class QuizDbHelper extends SQLiteOpenHelper {
     }
 
     private void fillCategoriesTable() {
-        Category c1 = new Category("Programming");
+        Category c1 = new Category("History");
         addCategory(c1);
-        Category c2 = new Category("Geography");
+        Category c2 = new Category("Programming");
         addCategory(c2);
-        Category c3 = new Category("Math");
+        Category c3 = new Category("Computer Graphics");
         addCategory(c3);
-        Category c4 = new Category("History");
+        Category c4 = new Category("OS");
         addCategory(c4);
+        Category c5 = new Category("DBMS");
+        addCategory(c5);
+        Category c6 = new Category("DS");
+        addCategory(c6);
+        Category c7 = new Category("Economics");
+        addCategory(c7);
+        Category c8 = new Category("DSP");
+        addCategory(c8);
+        Category c9 = new Category("Data Structure");
+        addCategory(c9);
+        Category c10 = new Category("Physics");
+        addCategory(c10);
     }
 
     private void addCategory(Category category) {
@@ -106,6 +118,7 @@ public class QuizDbHelper extends SQLiteOpenHelper {
         cursor.close();
         return categoryList;
     }
+
     public ArrayList<Question> getQuestions(int categoryID) {
         ArrayList<Question> questionList = new ArrayList<>();
         db = getReadableDatabase();

@@ -1,20 +1,17 @@
 package com.curiousca.squiz.Activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.curiousca.squiz.DataClasses.Category;
 import com.curiousca.squiz.DataClasses.Question;
-import com.curiousca.squiz.DataClasses.QuizDbHelper;
 import com.curiousca.squiz.GKDataSource;
 import com.curiousca.squiz.R;
 import com.curiousca.squiz.model.ApiObject;
@@ -39,8 +36,18 @@ public class MainActivity extends AppCompatActivity {
     public static final String KEY_HIGHSCORE = "keyHighscore";
 
     private TextView textViewHighscore;
-    private Spinner spinnerCategory;
+    //    private Spinner spinnerCategory;
     private int highscore;
+    String categoryName;
+    int categoryId;
+
+    public static void start(Context context, String categoryName, int categoryId) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.setClass(context, MainActivity.class);
+        intent.putExtra("categoryName", categoryName);
+        intent.putExtra("categoryId", categoryId);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,16 +55,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         textViewHighscore = findViewById(R.id.text_View_highscore);
-        spinnerCategory = findViewById(R.id.spinner_category);
+//        spinnerCategory = findViewById(R.id.spinner_category);
         gkDataSource = new GKDataSource(MainActivity.this);
 
-        loadCategories();
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            categoryName = extras.getString("categoryName");
+            categoryId = extras.getInt("categoryId");
+        } else {
+            return;
+        }
+//        loadCategories();
         loadHighscore();
 
         progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setTitle("LOADING");
         progressDialog.setMessage("Please Wait");
         progressDialog.show();
+
         ApiService.getServiceClass().getAllPost().enqueue(new Callback<List<ApiObject>>() {
             @Override
             public void onResponse(Call<List<ApiObject>> call, Response<List<ApiObject>> response) {
@@ -100,12 +115,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startQuiz() {
-        Category selectedCategory = (Category) spinnerCategory.getSelectedItem();
-        int categoryID = selectedCategory.getId();
-        String categoryName = selectedCategory.getName();
-
         Intent intent = new Intent(MainActivity.this, QuizActivity.class);
-        intent.putExtra(EXTRA_CATEGORY_ID, categoryID);
+        intent.putExtra(EXTRA_CATEGORY_ID, categoryId);
         intent.putExtra(EXTRA_CATEGORY_NAME, categoryName);
         startActivityForResult(intent, REQUEST_CODE_QUIZ);
     }
@@ -124,16 +135,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadCategories() {
-        QuizDbHelper dbHelper = QuizDbHelper.getInstance(this);
-        List<Category> categories = dbHelper.getAllCategories();
-
-        ArrayAdapter<Category> adapterCategories = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, categories);
-        adapterCategories.setDropDownViewResource(android.R.layout.simple_list_item_checked);
-        spinnerCategory.setAdapter(adapterCategories);
-    }
-
     private void loadHighscore() {
         SharedPreferences prefs = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         highscore = prefs.getInt(KEY_HIGHSCORE, 0);
@@ -149,4 +150,6 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt(KEY_HIGHSCORE, highscore);
         editor.apply();
     }
+
+
 }
